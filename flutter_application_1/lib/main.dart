@@ -127,7 +127,7 @@ Busca ayuda inmediata con autoridades o personal especializado.
 """;
     }
 
-    if (_contains(input, ["en mi casa", "mi familia", "mi papá", "mi mamá"])) {
+    if (_contains(input, ["en mi casa", "mi familia", "mi papá", "mi mamá","Mi Padrastro"])) {
       return """
 Tipo de violencia identificado: Violencia doméstica.
 
