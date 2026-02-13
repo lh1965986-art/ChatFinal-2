@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-//holaaaaaaaaa
+
 void main() {
   runApp(const ChatBotApp());
 }
@@ -35,12 +35,12 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _yaSaludo = false;
 
   final List<String> _respuestasSugeridas = [
-    "Me siento mal",
+    "Tengo miedo",
     "Me pegan",
-    "Me insultan",
-    "Me molestan en la escuela",
+    "Me humillan",
+    "Me hacen bullying",
     "Pasa en mi casa",
-    "Tengo miedo"
+    "Me siento mal"
   ];
 
   @override
@@ -66,7 +66,7 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollToBottom();
 
     Future.delayed(const Duration(milliseconds: 300), () {
-      final reply = chatbotResponse(text);
+      final reply = generarRespuesta(text);
       setState(() {
         _messages.add(Message(text: reply, isUser: false));
       });
@@ -86,100 +86,192 @@ class _ChatScreenState extends State<ChatScreen> {
     });
   }
 
-  String chatbotResponse(String input) {
-    input = input.toLowerCase().trim();
+  String normalizar(String texto) {
+    texto = texto.toLowerCase();
+    texto = texto.replaceAll("toy", "estoy");
+    texto = texto.replaceAll("pos", "pues");
+    texto = texto.replaceAll("pa ", "para ");
+    texto = texto.replaceAll("ma ", "mamá ");
+    texto = texto.replaceAll("k ", "que ");
+    texto = texto.replaceAll("xq", "porque");
+    return texto;
+  }
+
+  bool contiene(String texto, List<String> palabras) {
+    for (var palabra in palabras) {
+      if (texto.contains(palabra)) return true;
+    }
+    return false;
+  }
+
+  String generarRespuesta(String input) {
+    input = normalizar(input);
 
     if (!_yaSaludo) {
       _yaSaludo = true;
-      return "Hola. Cuéntame qué está pasando.";
+      return "Hola. Soy Lumi. Puedes contarme lo que está pasando.";
     }
 
-    // VIOLENCIA FÍSICA
-    if (_contains(input, [
-      "me golpean",
+    // ================= EMOCIONES =================
+
+    if (contiene(input, [
+      "tengo miedo",
+      "me da miedo",
+      "estoy asustado",
+      "ando asustado"
+    ])) {
+      return """
+Entiendo que tengas miedo.
+
+Sentirte así es válido.
+Si estás en peligro inmediato llama al 911.
+
+Busca un adulto o persona de confianza.
+""";
+    }
+
+    if (contiene(input, [
+      "ansiedad",
+      "estoy ansioso",
+      "no puedo respirar",
+      "me siento nervioso"
+    ])) {
+      return """
+Parece que estás sintiendo ansiedad.
+
+Respira profundo conmigo.
+No estás solo.
+
+Hablar con alguien puede ayudarte mucho.
+""";
+    }
+
+    if (contiene(input, [
+      "me siento mal",
+      "estoy triste",
+      "ando bajoneado",
+      "me siento solo"
+    ])) {
+      return """
+Lamento que te sientas así.
+
+Tus emociones importan.
+Cuéntame qué está pasando.
+""";
+    }
+
+    // ================= VIOLENCIA FÍSICA =================
+
+    if (contiene(input, [
       "me pegan",
+      "me golpean",
       "me empujan",
-      "me pegaron",
-      "me golpearon"
+      "me madrearon",
+      "me chingaron",
+      "me fregaron"
     ])) {
-      return """Tipo de violencia identificado: Violencia física.
+      return """
+Identifico violencia física.
 
-Nadie tiene derecho a hacerte daño.
-Busca ayuda inmediata con un adulto de confianza o autoridades.""";
+Nadie tiene derecho a lastimarte.
+Esto no es tu culpa.
+
+Busca ayuda inmediata con un adulto o llama al 911.
+""";
     }
 
-    // VIOLENCIA PSICOLÓGICA
-    if (_contains(input, [
-      "me insultan",
-      "me gritan",
+    // ================= VIOLENCIA PSICOLÓGICA =================
+
+    if (contiene(input, [
+      "me gritan"
+    ])) {
+      return """
+Que te griten constantemente no es normal.
+
+Eso puede afectar cómo te sientes contigo mismo.
+Mereces respeto.
+""";
+    }
+
+    if (contiene(input, [
       "me humillan",
-      "me ofenden"
+      "me traen de bajada",
+      "me hacen menos"
     ])) {
-      return """Tipo de violencia identificado: Violencia psicológica.
+      return """
+Humillarte es violencia psicológica.
 
-Las palabras también causan daño.
-Habla con alguien de confianza o un orientador.""";
+No mereces que te hagan sentir menos.
+Tu valor no depende de lo que digan otros.
+""";
     }
 
-    // VIOLENCIA SEXUAL
-    if (_contains(input, [
-      "abuso",
+    if (contiene(input, [
+      "me insultan",
+      "me dicen inutil",
+      "me dicen cosas feas"
+    ])) {
+      return """
+Los insultos también son violencia.
+
+Las palabras pueden doler mucho.
+Hablar con alguien puede ayudarte.
+""";
+    }
+
+    // ================= VIOLENCIA ESCOLAR =================
+
+    if (contiene(input, [
+      "bullying",
+      "me hacen bullying",
+      "me traen carrilla",
+      "me molestan en la escuela"
+    ])) {
+      return """
+Eso es violencia escolar.
+
+No es tu culpa.
+Puedes hablar con un maestro u orientador.
+
+Mereces estudiar en paz.
+""";
+    }
+
+    // ================= VIOLENCIA DOMÉSTICA =================
+
+    if (contiene(input, [
+      "en mi casa",
+      "mi papá me pega",
+      "mi mamá me pega",
+      "mi padrastro"
+    ])) {
+      return """
+La violencia en casa no es normal.
+
+Tu hogar debe ser un lugar seguro.
+Busca ayuda con un familiar, maestro o llama al 911 si estás en peligro.
+""";
+    }
+
+    // ================= VIOLENCIA SEXUAL =================
+
+    if (contiene(input, [
       "me tocaron",
       "me obligaron",
+      "abuso",
       "violaron"
     ])) {
-      return """Tipo de violencia identificado: Violencia sexual.
+      return """
+Eso es violencia sexual.
 
-Esto es grave y no es tu culpa.
-Busca ayuda inmediata con autoridades o personal especializado.""";
+No es tu culpa.
+Es importante buscar ayuda inmediata con autoridades o un adulto de confianza.
+
+Si estás en peligro llama al 911.
+""";
     }
 
-    // VIOLENCIA DOMÉSTICA
-    if (_contains(input, [
-      "en mi casa",
-      "mi papá",
-      "mi mamá",
-      "mi padrastro",
-      "mi familia"
-    ])) {
-      return """Tipo de violencia identificado: Violencia doméstica.
-
-La violencia en el hogar no es normal.
-Busca apoyo con familiares, maestros o instituciones.""";
-    }
-
-    // VIOLENCIA ESCOLAR
-    if (_contains(input, [
-      "escuela",
-      "bullying",
-      "me molestan"
-    ])) {
-      return """Tipo de violencia identificado: Violencia escolar.
-
-No estás solo.
-Informa a un maestro u orientador escolar.""";
-    }
-
-    // VIOLENCIA CONTRA NIÑOS
-    if (_contains(input, [
-      "soy niño",
-      "soy niña",
-      "menor"
-    ])) {
-      return """Tipo de violencia identificado: Violencia contra niños y niñas.
-
-Ningún tipo de violencia está justificado.
-Busca ayuda con adultos responsables o instituciones de protección infantil.""";
-    }
-
-    return "Te escucho. Puedes contarme un poco más.";
-  }
-
-  bool _contains(String input, List<String> words) {
-    for (final word in words) {
-      if (input.contains(word)) return true;
-    }
-    return false;
+    return "Te escucho. Cuéntame un poco más para poder ayudarte mejor.";
   }
 
   @override
@@ -212,13 +304,13 @@ Busca ayuda con adultos responsables o instituciones de protección infantil."""
 
   Widget _sugerencias() {
     return SizedBox(
-      height: 50,
+      height: 45,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _respuestasSugeridas.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFFDC67F),
