@@ -76,6 +76,11 @@ class _ChatScreenState extends State<ChatScreen> {
   // ================= RESPUESTAS =================
   String generarRespuesta(String input) {
     input = input.toLowerCase();
+//==================== SALUDO =====================
+// ================= SALUDO =================
+if (contiene(input, ["hola", "buenas", "buen día", "buenas tardes", "buenas noches"])) {
+  return "¡Hola! 😊 ¿Cómo te sientes hoy?";
+}
 
     // ================= VIOLENCIA SEXUAL =================
     if (contiene(input, [
